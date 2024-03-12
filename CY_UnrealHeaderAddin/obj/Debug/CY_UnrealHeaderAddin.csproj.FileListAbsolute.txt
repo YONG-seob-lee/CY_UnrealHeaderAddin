@@ -1,0 +1,13 @@
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\bin\Debug\CY_UnrealHeaderAddin.dll
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\bin\Debug\CY_UnrealHeaderAddin.pdb
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\bin\Debug\CY_UnrealHeaderAddin.dll.manifest
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\bin\Debug\CY_UnrealHeaderAddin.vsto
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\obj\Debug\CY_UnrealHeaderAddin.csproj.AssemblyReference.cache
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\obj\Debug\CY_UnrealHeaderAddin.Properties.Resources.resources
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\obj\Debug\CY_UnrealHeaderAddin.Ribbon1.resources
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\obj\Debug\CY_UnrealHeaderAddin.csproj.GenerateResource.cache
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\obj\Debug\CY_UnrealHeaderAddin.csproj.CoreCompileInputs.cache
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\obj\Debug\CY_Unrea.8EECE7DE.Up2Date
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\obj\Debug\CY_UnrealHeaderAddin.dll
+C:\Users\VIC\source\repos\CY_UnrealHeaderAddin\CY_UnrealHeaderAddin\obj\Debug\CY_UnrealHeaderAddin.pdb
