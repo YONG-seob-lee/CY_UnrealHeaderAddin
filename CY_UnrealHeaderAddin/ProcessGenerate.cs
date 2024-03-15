@@ -78,7 +78,7 @@ namespace CY_UnrealHeaderAddin
         {
             string fileName = "ProjectCY.uproject";
             AddinFunctionLibrary Lib = new AddinFunctionLibrary();
-            string EmplacePath = Lib.GetEmplacePath();
+            string EmplacePath = Lib.GetRegistPath();
 
             EmplacePath = CommonUtil.ApartFolder(EmplacePath);
             EmplacePath = CommonUtil.ApartFolder(EmplacePath);

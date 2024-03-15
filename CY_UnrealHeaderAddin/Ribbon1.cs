@@ -28,11 +28,11 @@ namespace CY_UnrealHeaderAddin
         private void OnClick_AddCsvButton(object sender, RibbonControlEventArgs e)
         {
             
-            string RegistFilePath = Lib.GetRegistFilePath();
+            string RegistFilePath = Lib.GetSaveFilePath();
 
             if(RegistFilePath == string.Empty)
             {
-                CommonUtil.ShowMessage(CommonUtil.EMessageType.NoRegistError, Lib.GetRegistPath());
+                CommonUtil.ShowMessage(CommonUtil.EMessageType.NoRegistError, Lib.GetSavePath());
                 return;
             }
             
@@ -40,11 +40,11 @@ namespace CY_UnrealHeaderAddin
         }
         private void OnClick_AddHeaderButton(object sender, RibbonControlEventArgs e)
         {
-            string RegistFilePath = Lib.GetRegistFilePath();
+            string RegistFilePath = Lib.GetSaveFilePath();
 
             if (RegistFilePath == string.Empty)
             {
-                CommonUtil.ShowMessage(CommonUtil.EMessageType.NoRegistError, Lib.GetRegistPath());
+                CommonUtil.ShowMessage(CommonUtil.EMessageType.NoRegistError, Lib.GetSavePath());
                 return;
             }
 
@@ -52,11 +52,11 @@ namespace CY_UnrealHeaderAddin
         }
         private void OnClick_AddBothButton(object sender, RibbonControlEventArgs e)
         {
-            string RegistFilePath = Lib.GetRegistFilePath();
+            string RegistFilePath = Lib.GetSaveFilePath();
 
             if (RegistFilePath == string.Empty)
             {
-                CommonUtil.ShowMessage(CommonUtil.EMessageType.NoRegistError, Lib.GetRegistPath());
+                CommonUtil.ShowMessage(CommonUtil.EMessageType.NoRegistError, Lib.GetSavePath());
                 return;
             }
 
@@ -70,20 +70,18 @@ namespace CY_UnrealHeaderAddin
 
             if (FolderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                CommonUtil.ShowMessage(CommonUtil.EMessageType.AccessRegist, FolderBrowserDialog.SelectedPath);
-
-                String EmplacePath = Lib.MakeRegistPath(Directory.GetCurrentDirectory());
-                System.IO.File.WriteAllText(EmplacePath, FolderBrowserDialog.SelectedPath);
+                string SavePath = Lib.MakeRegistPath(FolderBrowserDialog.SelectedPath);
+                CommonUtil.ShowMessage(CommonUtil.EMessageType.AccessRegist, FolderBrowserDialog.SelectedPath, SavePath);
             }
         }
 
         private void Generate_Click(object sender, RibbonControlEventArgs e)
         {
-            string RegistFilePath = Lib.GetRegistFilePath();
+            string RegistFilePath = Lib.GetSaveFilePath();
 
             if (RegistFilePath == string.Empty)
             {
-                CommonUtil.ShowMessage(CommonUtil.EMessageType.NoRegistError, Lib.GetRegistPath());
+                CommonUtil.ShowMessage(CommonUtil.EMessageType.NoRegistError, Lib.GetSavePath());
                 return;
             }
 

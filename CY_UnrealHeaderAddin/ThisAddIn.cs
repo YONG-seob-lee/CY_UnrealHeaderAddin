@@ -64,24 +64,25 @@ namespace CY_UnrealHeaderAddin
         public const string UneralHeaderAddin = "UnrealHeaderAddin";
         public const string RegistPath = "RegistPath";
         
-        public string MakeRegistPath(string OriginPath)
+        public string MakeRegistPath(string SelectedPath)
         {
-            string ResultPath = OriginPath + "\\" + UneralHeaderAddin;
-            Directory.CreateDirectory(ResultPath);
+            string SavePath = Directory.GetCurrentDirectory() + "\\" + UneralHeaderAddin;
+            Directory.CreateDirectory(SavePath);
+            SavePath += "\\" + RegistPath + ".txt";
 
-            ResultPath += "\\" + RegistPath + ".txt";
-            return ResultPath;
+            System.IO.File.WriteAllText(SavePath, SelectedPath);
+            return SavePath;
         }
-        public string GetEmplacePath()
+        public string GetRegistPath()
         {
-            StreamReader Reader = new StreamReader(GetRegistFilePath());
+            StreamReader Reader = new StreamReader(GetSaveFilePath());
             if(Reader == null)
             {
                 return string.Empty;
             }
             return Reader.ReadLine();
         }
-        public string GetRegistPath()
+        public string GetSavePath()
         {
             string Path = Directory.GetCurrentDirectory() + "\\" + UneralHeaderAddin;
             if(Directory.Exists(Path))
@@ -91,9 +92,9 @@ namespace CY_UnrealHeaderAddin
 
             return string.Empty;
         }
-        public string GetRegistFilePath()
+        public string GetSaveFilePath()
         {
-            string FilePath = GetRegistPath() + "\\" + RegistPath + ".txt";
+            string FilePath = GetSavePath() + "\\" + RegistPath + ".txt";
             if(File.Exists(FilePath))
             {
                 return FilePath;
@@ -200,8 +201,9 @@ namespace CY_UnrealHeaderAddin
                     }
                     DataTable.Rows.Add(Row);
                 }
-
-                Workbook.SaveAs(SavePath + "\\" + "asdf.csv", XlFileFormat.xlCSV);
+                string Name = Workbook.Name;
+                Name = CommonUtil.ApartExtension(Name);
+                Workbook.SaveAs(SavePath + "\\" + Name + ".csv", XlFileFormat.xlCSV);
 
             }
             finally
@@ -228,7 +230,10 @@ namespace CY_UnrealHeaderAddin
             
             string ExcelName = CommonUtil.ApartExtension(Workbook.Name);
             
-            String RegistPath = GetEmplacePath();
+            String RegistPath = GetRegistPath();
+            RegistPath = CommonUtil.ApartFolder(RegistPath);
+            RegistPath = CommonUtil.ApartFolder(RegistPath);
+            RegistPath += "\\Source\\ProjectCY\\Table";
 
             FileStream FileStream = new FileStream(RegistPath + "\\" + ExcelName + ".h", FileMode.OpenOrCreate);
             StreamWriter Writer = new StreamWriter(FileStream);
@@ -277,7 +282,7 @@ namespace CY_UnrealHeaderAddin
                         break;
                 }
 
-                Writer.WriteLine(BlankStr + Keys[i] + " " + Values[i] + InitializeStr);
+                Writer.WriteLine(BlankStr + Values[i] + " " + Keys[i] + InitializeStr);
             }
 
             Writer.WriteLine("};");
@@ -301,7 +306,7 @@ namespace CY_UnrealHeaderAddin
             WrongUnrealEnginePath = 5,
         }
         
-        public static void ShowMessage(EMessageType Type, string String)
+        public static void ShowMessage(EMessageType Type, string String1, string String2 = null)
         {
             string Title = string.Empty;
             string Discussion = string.Empty;
@@ -311,11 +316,11 @@ namespace CY_UnrealHeaderAddin
             {
                 case EMessageType.AccessRegist:
                     Title = "Access Regist Path : 경로 설정 완료";
-                    Discussion = "경로 :" + String + "\n 해당 경로로 설정 되었습니다." + "\n Save Directory : \"" + Directory.GetCurrentDirectory() + "\"";
+                    Discussion = "경로 :" + String1 + "\n 해당 경로로 설정 되었습니다." + "\n Save Directory : \"" + String2 + "\"";
                     break;
                 case EMessageType.NoRegistError:
                     Title = Warning + "경로 미설정";
-                    Discussion = "경로를 설정하지 않으셨습니다.\n경로를 설정해 주세요.\n" + "경로 :" + String + "\n 해당 경로를 확인해주세요.";
+                    Discussion = "경로를 설정하지 않으셨습니다.\n경로를 설정해 주세요.\n" + "경로 :" + String1 + "\n 해당 경로를 확인해주세요.";
                     break;
                 case EMessageType.MoreThanOneExcelIsOpen:
                     Title = Warning + "다수의 엑셀 파일 오픈";
@@ -328,7 +333,7 @@ namespace CY_UnrealHeaderAddin
                     break;
                 case EMessageType.WrongUnrealEnginePath:
                     Title = Warning + "잘못된 엔진 경로";
-                    Discussion = "설치된 엔진을 찾을 수 가 없습니다. 기본적인 경로로 설치해주세요 예) " + String;
+                    Discussion = "설치된 엔진을 찾을 수 가 없습니다. 기본적인 경로로 설치해주세요 예) " + String1;
                     break;
                 default:
                     break;

@@ -36,16 +36,16 @@
         {
             this.group2 = this.Factory.CreateRibbonGroup();
             this.RegistButton = this.Factory.CreateRibbonButton();
-            this.AddBothButton = this.Factory.CreateRibbonButton();
+            this.buttonGroup1 = this.Factory.CreateRibbonButtonGroup();
             this.AddCsvButton = this.Factory.CreateRibbonButton();
             this.AddHeaderButton = this.Factory.CreateRibbonButton();
+            this.AddBothButton = this.Factory.CreateRibbonButton();
             this.Generate = this.Factory.CreateRibbonButton();
             this.tab2 = this.Factory.CreateRibbonTab();
             this.IncludeCsvCheckBox = this.Factory.CreateRibbonCheckBox();
-            this.buttonGroup1 = this.Factory.CreateRibbonButtonGroup();
             this.group2.SuspendLayout();
-            this.tab2.SuspendLayout();
             this.buttonGroup1.SuspendLayout();
+            this.tab2.SuspendLayout();
             this.SuspendLayout();
             // 
             // group2
@@ -62,11 +62,12 @@
             this.RegistButton.Name = "RegistButton";
             this.RegistButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnClick_RegistPathButton);
             // 
-            // AddBothButton
+            // buttonGroup1
             // 
-            this.AddBothButton.Label = "Add Both";
-            this.AddBothButton.Name = "AddBothButton";
-            this.AddBothButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnClick_AddBothButton);
+            this.buttonGroup1.Items.Add(this.AddCsvButton);
+            this.buttonGroup1.Items.Add(this.AddHeaderButton);
+            this.buttonGroup1.Items.Add(this.AddBothButton);
+            this.buttonGroup1.Name = "buttonGroup1";
             // 
             // AddCsvButton
             // 
@@ -79,6 +80,12 @@
             this.AddHeaderButton.Label = "Add Header";
             this.AddHeaderButton.Name = "AddHeaderButton";
             this.AddHeaderButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnClick_AddHeaderButton);
+            // 
+            // AddBothButton
+            // 
+            this.AddBothButton.Label = "Add Both";
+            this.AddBothButton.Name = "AddBothButton";
+            this.AddBothButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnClick_AddBothButton);
             // 
             // Generate
             // 
@@ -97,13 +104,6 @@
             this.IncludeCsvCheckBox.Label = "Include Csv";
             this.IncludeCsvCheckBox.Name = "IncludeCsvCheckBox";
             // 
-            // buttonGroup1
-            // 
-            this.buttonGroup1.Items.Add(this.AddCsvButton);
-            this.buttonGroup1.Items.Add(this.AddHeaderButton);
-            this.buttonGroup1.Items.Add(this.AddBothButton);
-            this.buttonGroup1.Name = "buttonGroup1";
-            // 
             // Ribbon1
             // 
             this.Name = "Ribbon1";
@@ -112,10 +112,10 @@
             this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.Ribbon1_Load);
             this.group2.ResumeLayout(false);
             this.group2.PerformLayout();
-            this.tab2.ResumeLayout(false);
-            this.tab2.PerformLayout();
             this.buttonGroup1.ResumeLayout(false);
             this.buttonGroup1.PerformLayout();
+            this.tab2.ResumeLayout(false);
+            this.tab2.PerformLayout();
             this.ResumeLayout(false);
 
         }
