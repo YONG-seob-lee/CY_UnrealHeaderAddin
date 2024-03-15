@@ -187,6 +187,10 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="Array.cs" />
+    <Compile Include="ProcessGenerate.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

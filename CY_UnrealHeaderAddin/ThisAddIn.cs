@@ -60,18 +60,10 @@ namespace CY_UnrealHeaderAddin
 
     public partial class AddinFunctionLibrary
     {
-        public enum EMessageType
-        {
-            None = 0,
-            AccessRegist = 1,
-            NoRegistError = 2,
-            MoreThanOneExcelIsOpen = 3,
-            BlankData = 4,
-        }
 
         public const string UneralHeaderAddin = "UnrealHeaderAddin";
         public const string RegistPath = "RegistPath";
-
+        
         public string MakeRegistPath(string OriginPath)
         {
             string ResultPath = OriginPath + "\\" + UneralHeaderAddin;
@@ -116,23 +108,12 @@ namespace CY_UnrealHeaderAddin
 
             return true;
         }
-        private Excel.Workbook GetCurrentWorkbook()
-        {
-            Process[] ProcessName = Process.GetProcessesByName("excel");
-            if (ProcessName.Length != 1)
-            {
-                return null;
-            }
-
-            Excel.Application App = (Excel.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("excel.application");
-            return App.ActiveWorkbook;
-        }
 
         private Dictionary<string, string> GetTablePropertyData()
         {
             Dictionary<string, string> StructData = new Dictionary<string, string>();
 
-            Excel.Workbook CurrentWorkbook = GetCurrentWorkbook();
+            Excel.Workbook CurrentWorkbook = CommonUtil.GetCurrentWorkbook();
             Excel.Worksheet WorkSheet = CurrentWorkbook.ActiveSheet;
             Excel.Range ExcelRange = WorkSheet.UsedRange;
 
@@ -146,30 +127,13 @@ namespace CY_UnrealHeaderAddin
 
             return StructData;
         }
-        
-        public string ApartExtension(string Name)
-        {
-            Int32 PointIndex = 0;
-
-            char[] NameChar = Name.ToCharArray();
-            for(int i = NameChar.Length - 1; i != 0 ; i--)
-            {
-                if(NameChar[i] == '.')
-                {
-                    PointIndex = i;
-                    break;
-                }
-            }
-
-            return Name.Substring(0, PointIndex);
-        }
 
         public void MakeCsv()
         {
-            Excel.Workbook Workbook = GetCurrentWorkbook();
+            Excel.Workbook Workbook = CommonUtil.GetCurrentWorkbook();
             if(Workbook == null)
             {
-                ShowMessage(EMessageType.MoreThanOneExcelIsOpen, string.Empty);
+                CommonUtil.ShowMessage(CommonUtil.EMessageType.MoreThanOneExcelIsOpen, string.Empty);
                 return;
             }
 
@@ -181,7 +145,7 @@ namespace CY_UnrealHeaderAddin
                 Process[] ProcessName = Process.GetProcessesByName("excel");
                 if(ProcessName.Length > 1) 
                 {
-                    ShowMessage(EMessageType.MoreThanOneExcelIsOpen, string.Empty);
+                    CommonUtil.ShowMessage(CommonUtil.EMessageType.MoreThanOneExcelIsOpen, string.Empty);
                     return;
                 }
 
@@ -195,7 +159,7 @@ namespace CY_UnrealHeaderAddin
 
                 if(rowCount == 1 && colCount == 1)
                 {
-                    ShowMessage(EMessageType.BlankData, string.Empty);
+                    CommonUtil.ShowMessage(CommonUtil.EMessageType.BlankData, string.Empty);
                     return;
                 }
 
@@ -252,17 +216,17 @@ namespace CY_UnrealHeaderAddin
 
         public void MakeHeader()
         {
-            Excel.Workbook Workbook = GetCurrentWorkbook();
+            Excel.Workbook Workbook = CommonUtil.GetCurrentWorkbook();
             if (Workbook == null)
             {
-                ShowMessage(EMessageType.MoreThanOneExcelIsOpen, string.Empty);
+                CommonUtil.ShowMessage(CommonUtil.EMessageType.MoreThanOneExcelIsOpen, string.Empty);
                 return;
             }
 
             const string BlankStr = "    ";
             const string UPROPERTY = "   UPROPERTY(EditAnywhere)";
             
-            string ExcelName = ApartExtension(Workbook.Name);
+            string ExcelName = CommonUtil.ApartExtension(Workbook.Name);
             
             String RegistPath = GetEmplacePath();
 
@@ -320,8 +284,73 @@ namespace CY_UnrealHeaderAddin
             Writer.Close();
             FileStream.Close();
         }
+        
 
-        public void ReleaseExcelObject(object Object)
+        
+    }
+
+    public partial class CommonUtil
+    {
+        public enum EMessageType
+        {
+            None = 0,
+            AccessRegist = 1,
+            NoRegistError = 2,
+            MoreThanOneExcelIsOpen = 3,
+            BlankData = 4,
+            WrongUnrealEnginePath = 5,
+        }
+        
+        public static void ShowMessage(EMessageType Type, string String)
+        {
+            string Title = string.Empty;
+            string Discussion = string.Empty;
+            const string Warning = "Warning : ";
+
+            switch (Type)
+            {
+                case EMessageType.AccessRegist:
+                    Title = "Access Regist Path : 경로 설정 완료";
+                    Discussion = "경로 :" + String + "\n 해당 경로로 설정 되었습니다." + "\n Save Directory : \"" + Directory.GetCurrentDirectory() + "\"";
+                    break;
+                case EMessageType.NoRegistError:
+                    Title = Warning + "경로 미설정";
+                    Discussion = "경로를 설정하지 않으셨습니다.\n경로를 설정해 주세요.\n" + "경로 :" + String + "\n 해당 경로를 확인해주세요.";
+                    break;
+                case EMessageType.MoreThanOneExcelIsOpen:
+                    Title = Warning + "다수의 엑셀 파일 오픈";
+                    Discussion = "두개 이상의 엑셀 파일이 활성화 되어있습니다..\n만약 한개만 켜져있는데도 이 메세지가 노출된다면\n컴퓨터를 재부팅해주세요\n" 
+                                 + "해결책 : 한개의 엑셀파일만 열려있어야 합니다.";
+                    break;
+                case EMessageType.BlankData:
+                    Title = Warning + "엑셀 내용 공백";
+                    Discussion = "최소 한개 이상의 데이터를 넣고\nAddCsv or AddHeader 를 해 주세요.";
+                    break;
+                case EMessageType.WrongUnrealEnginePath:
+                    Title = Warning + "잘못된 엔진 경로";
+                    Discussion = "설치된 엔진을 찾을 수 가 없습니다. 기본적인 경로로 설치해주세요 예) " + String;
+                    break;
+                default:
+                    break;
+            }
+
+            MessageBox.Show(Discussion, Title);
+        }
+        
+        public static Excel.Workbook GetCurrentWorkbook()
+        {
+            Process[] ProcessName = Process.GetProcessesByName("excel");
+            if (ProcessName.Length != 1)
+            {
+                return null;
+            }
+
+            Excel.Application App = (Excel.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("excel.application");
+            return App.ActiveWorkbook;
+        }
+        
+        
+        public static void ReleaseExcelObject(object Object)
         {
             try
             {
@@ -341,37 +370,39 @@ namespace CY_UnrealHeaderAddin
                 GC.Collect();
             }
         }
-
-        public void ShowMessage(EMessageType Type, string String)
+        
+        public static string ApartExtension(string Name)
         {
-            string Title = string.Empty;
-            string Discussion = string.Empty;
-            const string Warning = "Warning : ";
+            Int32 PointIndex = 0;
 
-            switch (Type)
+            char[] NameChar = Name.ToCharArray();
+            for(int i = NameChar.Length - 1; i != 0 ; i--)
             {
-                case EMessageType.AccessRegist:
-                    Title = "Access Regist Path : 경로 설정 완료";
-                    Discussion = "경로 :" + String + "\n 해당 경로로 설정 되었습니다." + "\n Save Directory : \"" + Directory.GetCurrentDirectory() + "\"";
+                if(NameChar[i] == '.')
+                {
+                    PointIndex = i;
                     break;
-                case EMessageType.NoRegistError:
-                    Title = Warning + "경로 미설정";
-                    Discussion = "경로를 설정하지 않으셨습니다.\n경로를 설정해 주세요.\n" + "경로 :" + String + "\n 해당 경로를 확인해주세요.";
-                    break;
-                case EMessageType.MoreThanOneExcelIsOpen:
-                    Title = Warning + "다수의 엑셀 파일 오픈";
-                    Discussion = "두개 이상의 엑셀 파일이 활성화 되어있습니다..\n만약 한개만 켜져있는데도 이 메세지가 노출된다면\n컴퓨터를 재부팅해주세요\n" 
-                                  + "해결책 : 한개의 엑셀파일만 열려있어야 합니다.";
-                    break;
-                case EMessageType.BlankData:
-                    Title = Warning + "엑셀 내용 공백";
-                    Discussion = "최소 한개 이상의 데이터를 넣고\nAddCsv or AddHeader 를 해 주세요.";
-                    break;
-                default:
-                    break;
+                }
             }
 
-            MessageBox.Show(Discussion, Title);
+            return Name.Substring(0, PointIndex);
+        }
+
+        public static string ApartFolder(string Name)
+        {
+            Int32 PointIndex = 0;
+
+            char[] NameChar = Name.ToCharArray();
+            for (int i = NameChar.Length - 1; i != 0; i--)
+            {
+                if (NameChar[i] == '\\')
+                {
+                    PointIndex = i;
+                    break;
+                }
+            }
+
+            return Name.Substring(0, PointIndex);
         }
     }
 }

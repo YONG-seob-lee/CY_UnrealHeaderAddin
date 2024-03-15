@@ -36,9 +36,10 @@
         {
             this.group2 = this.Factory.CreateRibbonGroup();
             this.RegistButton = this.Factory.CreateRibbonButton();
+            this.AddBothButton = this.Factory.CreateRibbonButton();
             this.AddCsvButton = this.Factory.CreateRibbonButton();
             this.AddHeaderButton = this.Factory.CreateRibbonButton();
-            this.AddBothButton = this.Factory.CreateRibbonButton();
+            this.Generate = this.Factory.CreateRibbonButton();
             this.tab2 = this.Factory.CreateRibbonTab();
             this.IncludeCsvCheckBox = this.Factory.CreateRibbonCheckBox();
             this.group2.SuspendLayout();
@@ -51,6 +52,7 @@
             this.group2.Items.Add(this.AddBothButton);
             this.group2.Items.Add(this.AddCsvButton);
             this.group2.Items.Add(this.AddHeaderButton);
+            this.group2.Items.Add(this.Generate);
             this.group2.Label = "Add Module";
             this.group2.Name = "group2";
             // 
@@ -59,6 +61,12 @@
             this.RegistButton.Label = "Regist Direction";
             this.RegistButton.Name = "RegistButton";
             this.RegistButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnClick_RegistPathButton);
+            // 
+            // AddBothButton
+            // 
+            this.AddBothButton.Label = "Add Both";
+            this.AddBothButton.Name = "AddBothButton";
+            this.AddBothButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnClick_AddBothButton);
             // 
             // AddCsvButton
             // 
@@ -72,11 +80,11 @@
             this.AddHeaderButton.Name = "AddHeaderButton";
             this.AddHeaderButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnClick_AddHeaderButton);
             // 
-            // AddBothButton
+            // Generate
             // 
-            this.AddBothButton.Label = "Add Both";
-            this.AddBothButton.Name = "AddBothButton";
-            this.AddBothButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.OnClick_AddBothButton);
+            this.Generate.Label = "Generate Unreal Code";
+            this.Generate.Name = "Generate";
+            this.Generate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Generate_Click);
             // 
             // tab2
             // 
@@ -112,6 +120,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton AddHeaderButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton AddBothButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox IncludeCsvCheckBox;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton Generate;
     }
 
     partial class ThisRibbonCollection
