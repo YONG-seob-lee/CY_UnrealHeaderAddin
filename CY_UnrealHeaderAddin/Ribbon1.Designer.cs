@@ -42,16 +42,16 @@
             this.Generate = this.Factory.CreateRibbonButton();
             this.tab2 = this.Factory.CreateRibbonTab();
             this.IncludeCsvCheckBox = this.Factory.CreateRibbonCheckBox();
+            this.buttonGroup1 = this.Factory.CreateRibbonButtonGroup();
             this.group2.SuspendLayout();
             this.tab2.SuspendLayout();
+            this.buttonGroup1.SuspendLayout();
             this.SuspendLayout();
             // 
             // group2
             // 
             this.group2.Items.Add(this.RegistButton);
-            this.group2.Items.Add(this.AddBothButton);
-            this.group2.Items.Add(this.AddCsvButton);
-            this.group2.Items.Add(this.AddHeaderButton);
+            this.group2.Items.Add(this.buttonGroup1);
             this.group2.Items.Add(this.Generate);
             this.group2.Label = "Add Module";
             this.group2.Name = "group2";
@@ -97,6 +97,13 @@
             this.IncludeCsvCheckBox.Label = "Include Csv";
             this.IncludeCsvCheckBox.Name = "IncludeCsvCheckBox";
             // 
+            // buttonGroup1
+            // 
+            this.buttonGroup1.Items.Add(this.AddCsvButton);
+            this.buttonGroup1.Items.Add(this.AddHeaderButton);
+            this.buttonGroup1.Items.Add(this.AddBothButton);
+            this.buttonGroup1.Name = "buttonGroup1";
+            // 
             // Ribbon1
             // 
             this.Name = "Ribbon1";
@@ -107,6 +114,8 @@
             this.group2.PerformLayout();
             this.tab2.ResumeLayout(false);
             this.tab2.PerformLayout();
+            this.buttonGroup1.ResumeLayout(false);
+            this.buttonGroup1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -121,6 +130,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton AddBothButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox IncludeCsvCheckBox;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton Generate;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButtonGroup buttonGroup1;
     }
 
     partial class ThisRibbonCollection
