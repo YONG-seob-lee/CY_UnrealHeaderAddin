@@ -127,8 +127,7 @@ namespace CY_UnrealHeaderAddin
                 {
                     continue;
                 }
-
-                if (ExcelRange.Cells[1, i].Valeue2.ToString()[0] == "#")
+                if (ExcelRange.Cells[1, i].Value2.ToString()[0] == '#')
                 {
                     continue;
                 }
@@ -285,8 +284,9 @@ namespace CY_UnrealHeaderAddin
 
             const string BlankStr = "    ";
             const string UPROPERTY = "   UPROPERTY(EditAnywhere)";
-            
-            string ExcelName = CommonUtil.ApartExtension(Workbook.Name);
+
+            ;
+            string ExcelName = Workbook.ActiveSheet.Name;
             
             String RegistPath = GetRegistPath();
             RegistPath = CommonUtil.ApartFolder(RegistPath);
