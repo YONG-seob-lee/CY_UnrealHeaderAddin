@@ -240,14 +240,14 @@ namespace CY_UnrealHeaderAddin
 
             Writer.WriteLine("#pragma once");
             Writer.WriteLine(BlankStr);
-            Writer.WriteLine("include \"CoreMinimal.h\"");
-            Writer.WriteLine("include \"Engine/DataTable.h\"");
-            Writer.WriteLine("include " + ExcelName + ".generated.h");
+            Writer.WriteLine("#include \"CoreMinimal.h\"");
+            Writer.WriteLine("#include \"Engine/DataTable.h\"");
+            Writer.WriteLine("#include \"" + ExcelName + ".generated.h\"");
             Writer.WriteLine(BlankStr);
             Writer.WriteLine("USTRUCT()");
             Writer.WriteLine("struct F" + ExcelName + ": public FTableRowBase");
             Writer.WriteLine("{");
-            Writer.WriteLine(BlankStr + "GENERATED_USTRUCT_BODT()");
+            Writer.WriteLine(BlankStr + "GENERATED_USTRUCT_BODY()");
             Writer.WriteLine("public:");
 
             //여기부터 구조체 for문
