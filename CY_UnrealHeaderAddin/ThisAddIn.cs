@@ -120,11 +120,27 @@ namespace CY_UnrealHeaderAddin
 
             int colCount = ExcelRange.Columns.Count;
 
-            for (int i = 1; i <= colCount; i++)
+            int StartCol = 0;
+            for (int i = 1; i <= 100; i++)
             {
-                StructData.Add(ExcelRange.Cells[1, i].Value2.ToString(), ExcelRange.Cells[2, i].Value2.ToString());
+                if(ExcelRange.Cells[1, i].Value2.ToString() == string.Empty)
+                {
+                    continue;
+                }
+
+                if (ExcelRange.Cells[1, i].Valeue2.ToString()[0] == "#")
+                {
+                    continue;
+                }
+
+                StartCol = i;
+                break;
             }
-           
+            
+            for (int i = StartCol; i <= colCount; i++)
+                {
+                    StructData.Add(ExcelRange.Cells[1, i].Value2.ToString(), ExcelRange.Cells[2, i].Value2.ToString());
+                }
 
             return StructData;
         }
@@ -153,6 +169,7 @@ namespace CY_UnrealHeaderAddin
                 SavePath = Workbook.Path;
 
                 Excel.Worksheet WorkSheet = Workbook.ActiveSheet;
+                
                 Excel.Range ExcelRange = WorkSheet.UsedRange;
 
                 int rowCount = ExcelRange.Rows.Count;
@@ -175,7 +192,7 @@ namespace CY_UnrealHeaderAddin
 
                 int rowCounter;
                 DataRow Row = null;
-                for (int i = 2; i < rowCount; i++)
+                for (int i = 3; i <= rowCount; i++)
                 {
                     Row = DataTable.NewRow();
                     rowCounter = 0;
@@ -201,9 +218,50 @@ namespace CY_UnrealHeaderAddin
                     }
                     DataTable.Rows.Add(Row);
                 }
-                string Name = Workbook.Name;
-                Name = CommonUtil.ApartExtension(Name);
-                Workbook.SaveAs(SavePath + "\\" + Name + ".csv", XlFileFormat.xlCSV);
+
+                Int32 Index = Workbook.ActiveSheet.Index;
+                string Name = Workbook.Sheets[Index].Name;
+
+                FileStream FileStream = new FileStream(SavePath + "\\" + Name + ".csv", FileMode.OpenOrCreate);
+                StreamWriter Writer = new StreamWriter(FileStream);
+
+                for (int i = 0; i < DataTable.Columns.Count; i++)
+                {
+                    Writer.Write(DataTable.Columns[i]);
+                    if (i < DataTable.Columns.Count - 1)
+                    {
+                        Writer.Write(",");
+                    }
+                }
+                Writer.Write(Writer.NewLine);
+
+                foreach (DataRow dr in DataTable.Rows)
+                {
+                    for (int i = 0; i < DataTable.Columns.Count; i++)
+                    {
+                        if (!Convert.IsDBNull(dr[i]))
+                        {
+                            string value = dr[i].ToString();
+                            if (value.Contains(','))
+                            {
+                                value = String.Format("\"{0}\"", value);
+                                Writer.Write(value);
+                            }
+                            else
+                            {
+                                Writer.Write(dr[i].ToString());
+                            }
+                        }
+                        if (i < DataTable.Columns.Count - 1)
+                        {
+                            Writer.Write(",");
+                        }
+                    }
+                    Writer.Write(Writer.NewLine);
+                }
+                Writer.Close();
+                FileStream.Close();
+
 
             }
             finally
@@ -257,6 +315,12 @@ namespace CY_UnrealHeaderAddin
             List<string> Values = StructData.Values.ToList();
             for(int i = 0; i != StructData.Count; i++)
             {
+                // todo 용섭 : # 이 들어간 녀석은 기획 전용으로 처리
+                if (Values[0] == "#")
+                {
+                    continue;
+                }
+
                 Writer.WriteLine(UPROPERTY);
 
                 string InitializeStr = string.Empty;
