@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 
 namespace CY_UnrealHeaderAddin
 {
@@ -119,15 +120,12 @@ namespace CY_UnrealHeaderAddin
             Excel.Range ExcelRange = WorkSheet.UsedRange;
 
             int colCount = ExcelRange.Columns.Count;
-
             int StartCol = 0;
+            ArrayList IgnoreColumnList = new ArrayList();
+
             for (int i = 1; i <= 100; i++)
             {
                 if(ExcelRange.Cells[1, i].Value2.ToString() == string.Empty)
-                {
-                    continue;
-                }
-                if (ExcelRange.Cells[1, i].Value2.ToString()[0] == '#')
                 {
                     continue;
                 }
@@ -135,11 +133,34 @@ namespace CY_UnrealHeaderAddin
                 StartCol = i;
                 break;
             }
-            
+
             for (int i = StartCol; i <= colCount; i++)
+            {
+                if (ExcelRange.Cells[1, i].Value2.ToString()[0] == '#')
                 {
-                    StructData.Add(ExcelRange.Cells[1, i].Value2.ToString(), ExcelRange.Cells[2, i].Value2.ToString());
+                    IgnoreColumnList.Add(i);
+                    continue;
                 }
+            }
+
+            for (int i = StartCol; i <= colCount; i++)
+            {
+                bool bIgnore = false;
+                foreach(int IgnoreColumn in IgnoreColumnList)
+                {
+                    if(IgnoreColumn == i)
+                    {
+                        bIgnore = true;
+                        break;
+                    }
+                }
+                if (bIgnore)
+                {
+                    continue;
+                }
+
+                StructData.Add(ExcelRange.Cells[1, i].Value2.ToString(), ExcelRange.Cells[2, i].Value2.ToString());
+            }
 
             return StructData;
         }
@@ -180,10 +201,22 @@ namespace CY_UnrealHeaderAddin
                     return;
                 }
 
+                ArrayList IgnoreCalumnLine = new ArrayList();
+
                 for (int i = 1; i <= rowCount; i++)
                 {
                     for (int j = 1; j <= colCount; j++)
                     {
+                        if (i == 1)
+                        {
+                            if (ExcelRange.Cells[i, j].Value2.ToString() == "#")
+                            {
+                                // 무시해야할 행 추가.
+                                IgnoreCalumnLine.Add(j);
+                                continue;
+                            }
+                        }
+
                         DataTable.Columns.Add(ExcelRange.Cells[i, j].Value2.ToString());
                     }
                     break;
@@ -197,8 +230,28 @@ namespace CY_UnrealHeaderAddin
                     rowCounter = 0;
                     for (int j = 1; j <= colCount; j++)
                     {
+                        bool bIgnore = false;
+                        foreach(int IgnoreColumn in IgnoreCalumnLine)
+                        {
+                            if(j == IgnoreColumn)
+                            {
+                                bIgnore = true;
+                                break;
+                            }
+                        }
+
+                        if(bIgnore)
+                        {
+                            continue;
+                        }
+
                         if (ExcelRange.Cells[i, j] != null && ExcelRange.Cells[i, j].Value2 != null)
                         {
+                            if(ExcelRange.Cells[i, j].Value2.ToString() == "#")
+                            {
+                                continue;
+                            }
+
                             if (j == 1)
                             {
                                 var Value = ExcelRange.Cells[i, j].Value2;
@@ -211,16 +264,20 @@ namespace CY_UnrealHeaderAddin
                         }
                         else
                         {
-                            Row[i] = "";
+                            Row[j] = " ";
                         }
                         rowCounter++;
                     }
                     DataTable.Rows.Add(Row);
                 }
-
+                
                 Int32 Index = Workbook.ActiveSheet.Index;
-                string Name = Workbook.Sheets[Index].Name;
+                string Name = Workbook.Sheets.Count > 1 ? Workbook.Sheets[Index].Name : Workbook.Name;
 
+                if(Name.EndsWith("xlsx"))
+                {
+                    Name = CommonUtil.ApartExtension(Name);
+                }
                 FileStream FileStream = new FileStream(SavePath + "\\" + Name + ".csv", FileMode.OpenOrCreate);
                 StreamWriter Writer = new StreamWriter(FileStream);
 
@@ -286,8 +343,13 @@ namespace CY_UnrealHeaderAddin
             const string UPROPERTY = "   UPROPERTY(EditAnywhere)";
 
             ;
-            string ExcelName = Workbook.ActiveSheet.Name;
+            string ExcelName = Workbook.Sheets.Count > 1 ? Workbook.ActiveSheet.Name : Workbook.Name;
             
+            if(ExcelName.EndsWith("xlsx"))
+            {
+                ExcelName = CommonUtil.ApartExtension(ExcelName);
+            }
+
             String RegistPath = GetRegistPath();
             RegistPath = CommonUtil.ApartFolder(RegistPath);
             RegistPath = CommonUtil.ApartFolder(RegistPath);
@@ -316,7 +378,7 @@ namespace CY_UnrealHeaderAddin
             for(int i = 0; i != StructData.Count; i++)
             {
                 // todo 용섭 : # 이 들어간 녀석은 기획 전용으로 처리
-                if (Values[0] == "#")
+                if (Values[i] == "#")
                 {
                     continue;
                 }
