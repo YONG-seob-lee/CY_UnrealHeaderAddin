@@ -202,6 +202,7 @@ namespace CY_UnrealHeaderAddin
                 }
 
                 ArrayList IgnoreCalumnLine = new ArrayList();
+                ArrayList IgnoreRowLine = new ArrayList();
 
                 for (int i = 1; i <= rowCount; i++)
                 {
@@ -211,21 +212,54 @@ namespace CY_UnrealHeaderAddin
                         {
                             if (ExcelRange.Cells[i, j].Value2.ToString() == "#")
                             {
-                                // 무시해야할 행 추가.
+                                // 무시해야할 열 추가.
                                 IgnoreCalumnLine.Add(j);
                                 continue;
                             }
                         }
-
                         DataTable.Columns.Add(ExcelRange.Cells[i, j].Value2.ToString());
                     }
                     break;
+                }
+
+                for(int i = 1; i <= rowCount; i++)
+                {
+                    if(ExcelRange.Cells[i, 1].Value2 == null)
+                    {
+                        // 무시해야할 행 추가.
+                        IgnoreRowLine.Add(i);
+                        continue;
+                    }
+                    else
+                    {
+                        if(ExcelRange.Cells[i, 1].Value2.ToString() == "#")
+                        {
+                            // 무시해야할 행 추가.
+                            IgnoreRowLine.Add(i);
+                            continue;
+                        }
+                    }
                 }
 
                 int rowCounter;
                 DataRow Row = null;
                 for (int i = 3; i <= rowCount; i++)
                 {
+                    bool bIgnoreRow = false;
+                    foreach(int IgnoreRow in IgnoreRowLine)
+                    {
+                        if(i == IgnoreRow)
+                        {
+                            bIgnoreRow = true;
+                            break;
+                        }
+                    }
+
+                    if (bIgnoreRow)
+                    {
+                        continue;
+                    }
+
                     Row = DataTable.NewRow();
                     rowCounter = 0;
                     for (int j = 1; j <= colCount; j++)
@@ -264,7 +298,7 @@ namespace CY_UnrealHeaderAddin
                         }
                         else
                         {
-                            Row[j] = " ";
+                            Row[rowCounter] = " ";
                         }
                         rowCounter++;
                     }
@@ -293,6 +327,21 @@ namespace CY_UnrealHeaderAddin
 
                 foreach (DataRow dr in DataTable.Rows)
                 {
+                    bool bIgnoreRow = false;
+                    foreach (int IgnoreRow in IgnoreRowLine)
+                    {
+                        if (DataTable.Rows.IndexOf(dr) == IgnoreRow)
+                        {
+                            bIgnoreRow = true;
+                            break;
+                        }
+                    }
+
+                    if(bIgnoreRow)
+                    {
+                        continue;
+                    }
+
                     for (int i = 0; i < DataTable.Columns.Count; i++)
                     {
                         if (!Convert.IsDBNull(dr[i]))
